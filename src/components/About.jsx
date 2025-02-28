@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion"; // Animation library
 import {
   FaReact,
@@ -9,10 +9,25 @@ import {
   FaCode,
   FaTools,
 } from "react-icons/fa"; // Icons
-import aboutImage from "../assets/about.png"; // Ensure correct image path
+import aboutImage from "../assets/about.png"; 
+import axios from "axios";
 
 const About = () => {
+
+const [dataa, setdata] = useState()
+    useEffect(() => {
+      const fetchData= async()=>{
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}about/get`)
+        console.log("data....", response.data.data)
+        setdata(response.data.data[0])
+
+      }
+      fetchData()
+    }, [])
+    
   return (
+
+
     <section id="about" className="py-16 px-6 md:px-16 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-900 ">
       <div className="max-w-6xl mx-auto flex flex-col-reverse md:flex-row items-center gap-12 mt-20">
         {/* Left Section - Text & Icons */}
@@ -22,11 +37,9 @@ const About = () => {
           transition={{ duration: 0.8 }} 
           className="w-full md:w-1/2 text-center md:text-left"
         >
-          <h2 className="text-4xl font-bold text-blue-600">About</h2>
+          <h2 className="text-4xl font-bold text-blue-600">{dataa?.title}</h2>
           <p className="mt-4 text-lg text-gray-700 leading-relaxed">
-            I'm a Full Stack Developer with expertise in React.js, React Native, Node.js, Express.js, MongoDB, and MySQL.
-            I build scalable, high-performance web and mobile applications, ensuring seamless user experiences.
-            Passionate about JavaScript, always eager to learn and apply new technologies.
+          {dataa?.description}
           </p>
 
           {/* Skills Section */}
@@ -65,7 +78,8 @@ const About = () => {
         >
           <motion.img
             whileHover={{ scale: 1.1 }}
-            src={aboutImage}
+           src={`${import.meta.env.VITE_BASE_URL.replace('/api/', '')}${dataa?.image.replace(/^.*[\\/](uploads[\\/])/, "/uploads/")}`} 
+
             alt="About Me"
             className="w-72 h-72 md:w-96 md:h-96 rounded-lg shadow-xl object-cover"
           />
